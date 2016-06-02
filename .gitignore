@@ -2,7 +2,6 @@
 *.pyd
 *.pyc
 *.csv
-*test_*
 
 # Don't know what this is
 .DS_Store
