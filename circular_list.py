@@ -58,10 +58,8 @@ class CircList(list):
         return [slice(mapped_start, mapped_stop, _slice.step)]
 
     def _raw_cycle(self):
-        """Returns an iterator that cycles repeatedly ignoring virtual head
-
-        the __iter__ method for a recursion error.
-        "        index = -1
+        """Returns an iterator that cycles repeatedly ignoring virtual head"""
+        index = -1
         while True:
             index = (index + 1) % len(self)
             yield super(CircList, self).__getitem__(index)
@@ -75,19 +73,19 @@ class CircList(list):
         )
 
     def __delitem__(self, index):
-        print index
-        mapped_index = self._map_index(index)
-        super(CircList, self).__delitem__(mapped_index)
+        if isinstance(index, slice):
+            mapped = self._map_slice(index)
+        elif isinstance(index, int):
+            mapped = self._map_index(index)
+        else:
+            raise ValueError(
+                '__delitem__ only accepts an int or slice object argument (not "{})'.format(type(index))
+            )
+        super(CircList, self).__delitem__(mapped)
         self.head = self.head  # Resets the head mod length of list
 
     def __delslice__(self, start, end):
-        # mapped_start = self._map_index(start)
-        # mapped_end = self._map_index(end)
-        print 'delslice'
-        print start
-        print end
-        # print mapped_start
-        # print mapped_end
+        self.__delitem__(slice(start, end))
 
     def __eq__(self, obj):
         """Check circular equality regardless of underlying structure order"""
@@ -99,6 +97,20 @@ class CircList(list):
         except TypeError:
             pass
         return False
+
+    def __getitem__(self, index):
+        if isinstance(index, slice):
+            mapped = self._map_slice(index)
+        elif isinstance(index, int):
+            mapped = self._map_index(index)
+        else:
+            raise ValueError(
+                '__getitem__ only accepts an int or slice object argument (not "{})'.format(type(index))
+            )
+        super(CircList, self).__getitem__(mapped)
+
+    def __getslice__(self, start, end):
+        self.__getitem__(slice(start, end))
 
     def __iter__(self):
         """Returns an iterator over the entire list with custom start point"""
