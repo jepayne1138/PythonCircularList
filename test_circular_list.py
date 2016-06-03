@@ -1,6 +1,35 @@
 """Need to fix these test and implement a real testrunner"""
 import unittest
+import itertools
 import circular_list as circ_list
+
+
+def iter_equal(iter1, iter2):
+    """Checks equality of two iterables
+
+    NO NOT PASS INFINITE GENERATORS OR IT WILL CRASH PYTHON!
+
+    Checks if both iterables have the same length and same items
+    """
+    return list(iter1) == list(iter2)
+
+
+class IterEqualTests(unittest.TestCase):
+
+    def test_equal(self):
+        self.assertTrue(iter_equal(xrange(3), xrange(3)))
+
+    def test_unequal(self):
+        self.assertFalse(iter_equal(xrange(3), xrange(4)))
+
+    def test_iterable_nones_unequal_size(self):
+        """Checks an edge case for a previous version in case I revert
+
+        A previous idea of iter_equal used izip_longest, which filled in
+        a None value if the they where not the same size. The added size check
+        should take care of that case, but just in case I want to keep a test.
+        """
+        self.assertFalse(iter_equal([None] * 3, [None] * 4))
 
 
 class CircListInitializationTests(unittest.TestCase):
@@ -33,8 +62,8 @@ class CircListManipulationTests(unittest.TestCase):
         self.list.head = 7
         self.assertEqual(self.list.head, 2)
 
-    # def test_initialized_iter(self):
-    #     pass
+    def test_iter_initialized(self):
+        self.assertTrue(iter_equal(iter(self.list), xrange(5)))
 
     def test_initialized_repr(self):
         self.assertEqual(
@@ -48,24 +77,6 @@ class CircListManipulationTests(unittest.TestCase):
             repr(self.list),
             'CircList<virtual=[2, 3, 4, 0, 1], raw=[0, 1, 2, 3, 4], head=2>'
         )
-
-class IterEqualTests(unittest.TestCase):
-
-    def test_equal(self):
-        self.assertTrue(circ_list.iter_equal(xrange(3), xrange(3)))
-
-    def test_unequal(self):
-        self.assertFalse(circ_list.iter_equal(xrange(3), xrange(4)))
-
-    def test_iterable_nones_unequal_size(self):
-        """Checks an edge case for a previous version in case I revert
-
-        A previous idea of iter_equal used izip_longest, which filled in
-        a None value if the they where not the same size. The added size check
-        should take care of that case, but just in case I want to keep a test.
-        """
-        self.assertFalse(circ_list.iter_equal([None] * 3, [None] * 4))
-
 
 def suite():
     loader = unittest.TestLoader()

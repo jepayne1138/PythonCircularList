@@ -142,13 +142,3 @@ class CircList(list):
         else:
             self.insert(self._head, obj)
             self.head += 1
-
-
-def iter_equal(iter1, iter2):
-    """Checks equality of two iterables
-
-    Checks if both iterables have the same length and same items
-    """
-    return (len(iter1) == len(iter2)) and all(
-        itertools.imap(lambda (x, y): x == y, itertools.izip(iter1, iter2))
-    )
