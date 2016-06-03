@@ -1,3 +1,6 @@
+import itertools
+
+
 class CircList(list):
 
     """CircList has a head attribute that defines the virtual start of the list
@@ -114,9 +117,11 @@ class CircList(list):
 
     def __iter__(self):
         """Returns an iterator over the entire list with custom start point"""
-        for index in xrange(self.head, self.head + len(self)):
-            yield super(CircList, self).__getitem__(index)
-        return
+        return itertools.islice(
+            self._raw_cycle(),
+            self.head,
+            self.head + len(self),
+        )
 
     def __repr__(self):
         return '{cls}<virtual=[{virtual}], raw={raw}, head={head}>'.format(
@@ -137,3 +142,13 @@ class CircList(list):
         else:
             self.insert(self._head, obj)
             self.head += 1
+
+
+def iter_equal(iter1, iter2):
+    """Checks equality of two iterables
+
+    Checks if both iterables have the same length and same items
+    """
+    return (len(iter1) == len(iter2)) and all(
+        itertools.imap(lambda (x, y): x == y, itertools.izip(iter1, iter2))
+    )
