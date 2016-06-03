@@ -151,6 +151,16 @@ class CircListDeleteTests(unittest.TestCase):
         CORRECT_OUTPUT = circ_list.CircList([0])
         self.assertEqual(self.list, CORRECT_OUTPUT)
 
+    def test_slice_removal_inital_head_no_start_no_step(self):
+        del self.list[:5]
+        CORRECT_OUTPUT = circ_list.CircList([5, 6])
+        self.assertEqual(self.list, CORRECT_OUTPUT)
+
+    def test_slice_removal_inital_head_no_start_no_stop(self):
+        del self.list[::2]
+        CORRECT_OUTPUT = circ_list.CircList([1, 3, 5])
+        self.assertEqual(self.list, CORRECT_OUTPUT)
+
     def test_slice_removal_inital_head_no_start_no_end_no_step(self):
         del self.list[:]
         CORRECT_OUTPUT = circ_list.CircList()

@@ -1,3 +1,4 @@
+import sys
 import itertools
 
 
@@ -62,7 +63,7 @@ class CircList(list):
         """
         # Define any None values for the slice as integers
         start_int = 0 if _slice.start is None else _slice.start
-        stop_int = len(self) if _slice.stop is None else _slice.stop
+        stop_int = sys.maxint if _slice.stop is None else _slice.stop
         step_int = 1 if _slice.step is None else _slice.step
 
         mapped_start = (start_int + self.head) % len(self)
