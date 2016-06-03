@@ -1,6 +1,5 @@
 """Need to fix these test and implement a real testrunner"""
 import unittest
-import itertools
 import circular_list as circ_list
 
 
