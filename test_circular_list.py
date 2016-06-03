@@ -33,13 +33,25 @@ class IterEqualTests(unittest.TestCase):
 
 class CircListInitializationTests(unittest.TestCase):
 
-    def setUp(self):
-        # Initialize a new empty CircList instance
-        self.list = circ_list.CircList()
+    def test_init_no_head_keyword(self):
+        circle_list = circ_list.CircList()
+        self.assertIsNone(circle_list.head)
 
-    def test_head_initialization(self):
-        """The head attribute should be initialized to zero"""
-        self.assertEqual(self.list.head, 0)
+    def test_init_head_keyword_given(self):
+        circle_list = circ_list.CircList(head=2)
+        self.assertIsNone(circle_list.head)
+
+    def test_init_default_head_with_initial_list(self):
+        circle_list = circ_list.CircList(xrange(3))
+        self.assertEqual(circle_list.head, 0)
+
+    def test_init_given_head_with_initial_list_in_range(self):
+        circle_list = circ_list.CircList(xrange(3), head=1)
+        self.assertEqual(circle_list.head, 1)
+
+    def test_init_given_head_with_initial_list_out_of_range(self):
+        circle_list = circ_list.CircList(xrange(3), head=4)
+        self.assertEqual(circle_list.head, 1)
 
 
 class CircListManipulationTests(unittest.TestCase):

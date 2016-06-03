@@ -9,9 +9,25 @@ class CircList(list):
     move right (i.e. not change unless last in list, then rolls over to 0)
     """
 
+    HEAD_PARAM_KEYWORD = 'head'
+    HEAD_PARAM_DEFAULT = 0
+
     def __init__(self, *args, **kwargs):
+        self._head = None
+        # Buffer the head keyword value to pop it from kwargs as calling the
+        # super constructor doesn't support head in kwargs, however don't set
+        # it yet as the head setter depends on the list already be initialized
+        if self.HEAD_PARAM_KEYWORD in kwargs:
+            head_buffer = kwargs.pop(self.HEAD_PARAM_KEYWORD)
+        else:
+            head_buffer = None
+        # Call parent constructor
         super(CircList, self).__init__(*args, **kwargs)
-        self._head = 0
+        # Set the head value from the buffer if head keyword was given
+        if head_buffer is not None:
+            self.head = head_buffer
+        else:
+            self.head = self.HEAD_PARAM_DEFAULT
 
     @property
     def head(self):
@@ -24,7 +40,7 @@ class CircList(list):
             raise ValueError(
                 'head only accepts type int (not "{}")'.format(type(value))
             )
-        self._head = value % len(self)
+        self._head = value % len(self) if len(self) > 0 else None
 
     def _map_index(self, index):
         """Maps index relative to the head
