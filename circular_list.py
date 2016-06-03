@@ -13,7 +13,7 @@ class CircList(list):
     HEAD_PARAM_DEFAULT = 0
 
     def __init__(self, *args, **kwargs):
-        self._head = None
+        self._head = 0
         # Buffer the head keyword value to pop it from kwargs as calling the
         # super constructor doesn't support head in kwargs, however don't set
         # it yet as the head setter depends on the list already be initialized
@@ -40,7 +40,7 @@ class CircList(list):
             raise ValueError(
                 'head only accepts type int (not "{}")'.format(type(value))
             )
-        self._head = value % len(self) if len(self) > 0 else None
+        self._head = value % len(self) if len(self) > 0 else 0
 
     def _map_index(self, index):
         """Maps index relative to the head
@@ -62,7 +62,9 @@ class CircList(list):
         """
         mapped_start = (_slice.start + self.head) % len(self)
         if _slice.stop > len(self):
-            mapped_stop = (_slice.start - 1) % len(self)
+            # We add 1 to the mod operator as we want to exceed the list end
+            # upon rollover as the endpoint is not inclusive
+            mapped_stop = (mapped_start - 1) % (len(self) + 1)
         else:
             mapped_stop = (_slice.stop + self.head) % len(self)
 
@@ -70,8 +72,13 @@ class CircList(list):
         step_int = 1 if _slice.step is None else _slice.step
         if mapped_stop < mapped_start:
             back_slice = slice(mapped_start, len(self), step_int)
-            step_leftover = step_int - ((len(self) - mapped_start) % step_int)
-            front_slice = slice(step_leftover, mapped_stop, step_int)
+            len_back_slice = len(self) - mapped_start
+            # Add special case for step_int == 1 as (x % 1) == 0 and we want 1
+            if step_int == 1:
+                step_start = 0
+            else:
+                step_start = step_int - (len_back_slice % step_int)
+            front_slice = slice(step_start, mapped_stop, step_int)
             return [back_slice, front_slice]
 
         # Otherwise just return a single mapped slice
@@ -94,7 +101,6 @@ class CircList(list):
 
     def __delitem__(self, index):
         if isinstance(index, slice):
-            mapped = self._map_slice(index)
             for mapped_slice in self._map_slice(index):
                 super(CircList, self).__delitem__(mapped_slice)
         elif isinstance(index, int):
@@ -115,6 +121,9 @@ class CircList(list):
             for i in xrange(len(obj)):
                 if super(CircList, self).__eq__(doubled[i:i+len(obj)]):
                     return True
+            # Check if both lists are empty
+            if len(self) + len(obj) == 0:
+                return True
         except TypeError:
             pass
         return False

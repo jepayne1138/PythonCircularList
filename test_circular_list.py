@@ -35,11 +35,11 @@ class CircListInitializationTests(unittest.TestCase):
 
     def test_init_no_head_keyword(self):
         circle_list = circ_list.CircList()
-        self.assertIsNone(circle_list.head)
+        self.assertEqual(circle_list.head, 0)
 
     def test_init_head_keyword_given(self):
         circle_list = circ_list.CircList(head=2)
-        self.assertIsNone(circle_list.head)
+        self.assertEqual(circle_list.head, 0)
 
     def test_init_default_head_with_initial_list(self):
         circle_list = circ_list.CircList(xrange(3))
@@ -52,6 +52,14 @@ class CircListInitializationTests(unittest.TestCase):
     def test_init_given_head_with_initial_list_out_of_range(self):
         circle_list = circ_list.CircList(xrange(3), head=4)
         self.assertEqual(circle_list.head, 1)
+
+
+class CircListGeneralTests(unittest.TestCase):
+
+    def test_eq_both_empty(self):
+        list1 = circ_list.CircList()
+        list2 = circ_list.CircList()
+        self.assertEqual(list1, list2)
 
 
 class CircListManipulationTests(unittest.TestCase):
@@ -114,13 +122,13 @@ class CircListDeleteTests(unittest.TestCase):
         self.list = circ_list.CircList(range(7))
 
     def test_item_removal_initial_head(self):
-        CORRECT_OUTPUT = circ_list.CircList([0, 1, 3, 4, 5, 6])
         del self.list[2]
+        CORRECT_OUTPUT = circ_list.CircList([0, 1, 3, 4, 5, 6])
         self.assertEqual(self.list, CORRECT_OUTPUT)
 
     def test_slice_removal_initial_head_no_step(self):
-        CORRECT_OUTPUT = circ_list.CircList([0, 5, 6])
         del self.list[1:5]
+        CORRECT_OUTPUT = circ_list.CircList([0, 5, 6])
         self.assertEqual(self.list, CORRECT_OUTPUT)
 
     def test_slice_removal_initial_head_with_step(self):
@@ -128,22 +136,32 @@ class CircListDeleteTests(unittest.TestCase):
         del self.list[1:5:2]
         self.assertEqual(self.list, CORRECT_OUTPUT)
 
+    def test_slice_removal_inital_head_no_end_no_step(self):
+        del self.list[1:]
+        CORRECT_OUTPUT = circ_list.CircList([0])
+        self.assertEqual(self.list, CORRECT_OUTPUT)
+
+    def test_slice_removal_inital_head_no_start_no_end_no_step(self):
+        del self.list[:]
+        CORRECT_OUTPUT = circ_list.CircList()
+        self.assertEqual(self.list, CORRECT_OUTPUT)
+
     def test_item_removal_head_moved(self):
-        CORRECT_OUTPUT = circ_list.CircList([0, 2, 3, 4, 5, 6])
         self.list.head += 3
         del self.list[5]
+        CORRECT_OUTPUT = circ_list.CircList([0, 2, 3, 4, 5, 6])
         self.assertEqual(self.list, CORRECT_OUTPUT)
 
     def test_slice_removal_head_moved_no_step(self):
-        CORRECT_OUTPUT = circ_list.CircList([1, 2, 3])
         self.list.head += 3
         del self.list[1:5]
+        CORRECT_OUTPUT = circ_list.CircList([1, 2, 3])
         self.assertEqual(self.list, CORRECT_OUTPUT)
 
     def test_slice_removal_head_moved_with_step(self):
-        CORRECT_OUTPUT = circ_list.CircList([0, 1, 2, 3, 5])
         self.list.head += 3
         del self.list[1:5:2]
+        CORRECT_OUTPUT = circ_list.CircList([0, 1, 2, 3, 5])
         self.assertEqual(self.list, CORRECT_OUTPUT)
 
 def suite():
@@ -151,6 +169,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTests(loader.loadTestsFromTestCase(IterEqualTests))
     suite.addTests(loader.loadTestsFromTestCase(CircListInitializationTests))
+    suite.addTests(loader.loadTestsFromTestCase(CircListGeneralTests))
     suite.addTests(loader.loadTestsFromTestCase(CircListManipulationTests))
     suite.addTests(loader.loadTestsFromTestCase(CircListDeleteTests))
     return suite
