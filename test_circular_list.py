@@ -116,6 +116,100 @@ class CircListManipulationTests(unittest.TestCase):
         self.assertTrue(self.list, CORRECT_OUTPUT)
 
 
+class CircListMapSliceTests(unittest.TestCase):
+
+    def setUp(self):
+        self.list = circ_list.CircList(range(7))
+
+    def test_map_slice_initial_head(self):
+        INPUT_SLICE = slice(1, 5, 2)
+        MAPPED_SLICES = [slice(1, 5, 2)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_initial_head_no_start(self):
+        INPUT_SLICE = slice(None, 5, 2)
+        MAPPED_SLICES = [slice(0, 5, 2)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_initial_head_no_stop(self):
+        INPUT_SLICE = slice(1, None, 2)
+        MAPPED_SLICES = [slice(1, 7, 2)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_initial_head_no_step(self):
+        INPUT_SLICE = slice(1, 5)
+        MAPPED_SLICES = [slice(1, 5, 1)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_initial_head_no_end_no_step(self):
+        INPUT_SLICE = slice(1, None)
+        MAPPED_SLICES = [slice(1, 7, 1)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_initial_head_no_start_no_stop(self):
+        INPUT_SLICE = slice(None, None, 3)
+        MAPPED_SLICES = [slice(0, 7, 3)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_initial_head_no_start_no_step(self):
+        INPUT_SLICE = slice(None, 5)
+        MAPPED_SLICES = [slice(0, 5, 1)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_initial_head_no_start_no_end_no_step(self):
+        INPUT_SLICE = slice(None, None, None)
+        MAPPED_SLICES = [slice(0, 7, 1)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_head_moved(self):
+        self.list.head += 3
+        INPUT_SLICE = slice(1, 5, 2)
+        MAPPED_SLICES = [slice(4, 7, 2)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_head_moved_no_start(self):
+        self.list.head += 3
+        INPUT_SLICE = slice(None, 5, 2)
+        MAPPED_SLICES = [slice(3, 7, 2), slice(0, 1, 2)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_head_moved_no_stop(self):
+        self.list.head += 3
+        INPUT_SLICE = slice(1, None, 2)
+        MAPPED_SLICES = [slice(4, 7, 2), slice(1, 3, 2)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_head_moved_no_step(self):
+        self.list.head += 3
+        INPUT_SLICE = slice(1, 5)
+        MAPPED_SLICES = [slice(4, 7, 1), slice(0, 1, 1)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_head_moved_no_end_no_step(self):
+        self.list.head += 3
+        INPUT_SLICE = slice(1, None)
+        MAPPED_SLICES = [slice(4, 7, 1), slice(0, 3, 1)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_head_moved_no_start_no_stop(self):
+        self.list.head += 3
+        INPUT_SLICE = slice(None, None, 2)
+        MAPPED_SLICES = [slice(3, 7, 2), slice(0, 3, 2)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_head_moved_no_start_no_step(self):
+        self.list.head += 3
+        INPUT_SLICE = slice(None, 5)
+        MAPPED_SLICES = [slice(3, 7, 1), slice(0, 1, 1)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+    def test_map_slice_head_moved_no_start_no_end_no_step(self):
+        self.list.head += 3
+        INPUT_SLICE = slice(None, None, None)
+        MAPPED_SLICES = [slice(3, 7, 1), slice(0, 3, 1)]
+        self.assertEqual(self.list._map_slice(INPUT_SLICE), MAPPED_SLICES)
+
+
 class CircListDeleteTests(unittest.TestCase):
 
     def setUp(self):
@@ -152,22 +246,22 @@ class CircListDeleteTests(unittest.TestCase):
         CORRECT_OUTPUT = circ_list.CircList([0, 5, 6])
         self.assertEqual(self.list, CORRECT_OUTPUT)
 
-    def test_slice_removal_inital_head_no_end_no_step(self):
+    def test_slice_removal_initial_head_no_end_no_step(self):
         del self.list[1:]
         CORRECT_OUTPUT = circ_list.CircList([0])
         self.assertEqual(self.list, CORRECT_OUTPUT)
 
-    def test_slice_removal_inital_head_no_start_no_step(self):
+    def test_slice_removal_initial_head_no_start_no_step(self):
         del self.list[:5]
         CORRECT_OUTPUT = circ_list.CircList([5, 6])
         self.assertEqual(self.list, CORRECT_OUTPUT)
 
-    def test_slice_removal_inital_head_no_start_no_stop(self):
+    def test_slice_removal_initial_head_no_start_no_stop(self):
         del self.list[::2]
         CORRECT_OUTPUT = circ_list.CircList([1, 3, 5])
         self.assertEqual(self.list, CORRECT_OUTPUT)
 
-    def test_slice_removal_inital_head_no_start_no_end_no_step(self):
+    def test_slice_removal_initial_head_no_start_no_end_no_step(self):
         del self.list[:]
         CORRECT_OUTPUT = circ_list.CircList()
         self.assertEqual(self.list, CORRECT_OUTPUT)
@@ -234,6 +328,7 @@ def suite():
     suite.addTests(loader.loadTestsFromTestCase(CircListInitializationTests))
     suite.addTests(loader.loadTestsFromTestCase(CircListGeneralTests))
     suite.addTests(loader.loadTestsFromTestCase(CircListManipulationTests))
+    suite.addTests(loader.loadTestsFromTestCase(CircListMapSliceTests))
     suite.addTests(loader.loadTestsFromTestCase(CircListDeleteTests))
     return suite
 

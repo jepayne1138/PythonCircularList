@@ -81,15 +81,16 @@ class CircList(list):
 
         # Map into two separate slices if stop rolls over to before start
         if mapped_stop <= mapped_start:
-            back_slice = slice(mapped_start, len(self), step_int)
+            ret_slices = [slice(mapped_start, len(self), step_int)]
             len_back_slice = len(self) - mapped_start
             # Add special case for step_int == 1 as (x % 1) == 0 and we want 1
             if step_int == 1:
                 step_start = 0
             else:
                 step_start = len_back_slice % step_int
-            front_slice = slice(step_start, mapped_stop, step_int)
-            return [back_slice, front_slice]
+            if mapped_stop > step_start:
+                ret_slices.append(slice(step_start, mapped_stop, step_int))
+            return ret_slices
 
         # Otherwise just return a single mapped slice
         return [slice(mapped_start, mapped_stop, step_int)]
