@@ -61,6 +61,10 @@ class CircListManipulationTests(unittest.TestCase):
         self.list.head = 7
         self.assertEqual(self.list.head, 2)
 
+    def test_eq_underlying_equal(self):
+        EQUAL_CIRC_LIST = circ_list.CircList(range(5))
+        self.assertEqual(self.list, EQUAL_CIRC_LIST)
+
     def test_iter_initialized(self):
         self.assertTrue(iter_equal(iter(self.list), xrange(5)))
 
@@ -84,11 +88,11 @@ class CircListManipulationTests(unittest.TestCase):
 
     def test_append_initialized(self):
         self.list.append(5)
-        self.assertEqual(self.list, range(6))
+        self.assertEqual(self.list, circ_list.CircList(range(6)))
 
     def test_append_head_moved(self):
         self.list.head += 2
-        CORRECT_OUTPUT = [2, 3, 4, 0, 1, 5]
+        CORRECT_OUTPUT = circ_list.CircList([2, 3, 4, 0, 1, 5])
         self.assertTrue(self.list, CORRECT_OUTPUT)
 
 
