@@ -57,6 +57,14 @@ class IterEqualTests(unittest.TestCase):
     def test_unequal(self):
         self.assertFalse(circ_list.iter_equal(xrange(3), xrange(4)))
 
+    def test_iterable_nones_unequal_size(self):
+        """Checks an edge case for a previous version in case I revert
+
+        A previous idea of iter_equal used izip_longest, which filled in
+        a None value if the they where not the same size. The added size check
+        should take care of that case, but just in case I want to keep a test.
+        """
+        self.assertFalse(circ_list.iter_equal([None] * 3, [None] * 4))
 
 
 def suite():
