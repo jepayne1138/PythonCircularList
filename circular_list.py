@@ -67,14 +67,15 @@ class CircList(list):
             mapped_stop = (_slice.stop + self.head) % len(self)
 
         # Map into two separate slices if stop rolls over to before start
+        step_int = 1 if _slice.step is None else _slice.step
         if mapped_stop < mapped_start:
-            back_slice = slice(mapped_start, len(self), _slice.step)
-            step_leftover = _slice.step - ((len(self) - mapped_start) % _slice.step)
-            front_slice = slice(step_leftover, mapped_stop, _slice.step)
+            back_slice = slice(mapped_start, len(self), step_int)
+            step_leftover = step_int - ((len(self) - mapped_start) % step_int)
+            front_slice = slice(step_leftover, mapped_stop, step_int)
             return [back_slice, front_slice]
 
         # Otherwise just return a single mapped slice
-        return [slice(mapped_start, mapped_stop, _slice.step)]
+        return [slice(mapped_start, mapped_stop, step_int)]
 
     def _raw_cycle(self):
         """Returns an iterator that cycles repeatedly ignoring virtual head"""
