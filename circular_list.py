@@ -64,7 +64,7 @@ class CircList(list):
         # Catch instance where start and stop are the same, return empty slice
         if (_slice.start is not None) and (_slice.start == _slice.stop):
             # We just return the input slice as we know that is empty
-            return _slice
+            return [_slice]
 
         # Define any None values for the slice as integers
         start_int = 0 if _slice.start is None else _slice.start
@@ -87,7 +87,6 @@ class CircList(list):
             if step_int == 1:
                 step_start = 0
             else:
-                # step_start = step_int - (len_back_slice % step_int)
                 step_start = len_back_slice % step_int
             front_slice = slice(step_start, mapped_stop, step_int)
             return [back_slice, front_slice]
