@@ -61,6 +61,11 @@ class CircList(list):
         Returns:
             List[slice]: list of mapped slices
         """
+        # Catch instance where start and stop are the same, return empty slice
+        if (_slice.start is not None) and (_slice.start == _slice.stop):
+            # We just return the input slice as we know that is empty
+            return _slice
+
         # Define any None values for the slice as integers
         start_int = 0 if _slice.start is None else _slice.start
         stop_int = sys.maxint if _slice.stop is None else _slice.stop
@@ -70,19 +75,20 @@ class CircList(list):
         if stop_int > len(self):
             # We add 1 to the mod operator as we want to exceed the list end
             # upon rollover as the endpoint is not inclusive
-            mapped_stop = (mapped_start - 1) % (len(self) + 1)
+            mapped_stop = ((self.head - 1) % len(self)) + 1
         else:
             mapped_stop = (stop_int + self.head) % len(self)
 
         # Map into two separate slices if stop rolls over to before start
-        if mapped_stop < mapped_start:
+        if mapped_stop <= mapped_start:
             back_slice = slice(mapped_start, len(self), step_int)
             len_back_slice = len(self) - mapped_start
             # Add special case for step_int == 1 as (x % 1) == 0 and we want 1
             if step_int == 1:
                 step_start = 0
             else:
-                step_start = step_int - (len_back_slice % step_int)
+                # step_start = step_int - (len_back_slice % step_int)
+                step_start = len_back_slice % step_int
             front_slice = slice(step_start, mapped_stop, step_int)
             return [back_slice, front_slice]
 
@@ -106,6 +112,7 @@ class CircList(list):
 
     def __delitem__(self, index):
         if isinstance(index, slice):
+            slices = self._map_slice(index)
             for mapped_slice in self._map_slice(index):
                 super(CircList, self).__delitem__(mapped_slice)
         elif isinstance(index, int):

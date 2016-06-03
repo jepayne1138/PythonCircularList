@@ -172,17 +172,54 @@ class CircListDeleteTests(unittest.TestCase):
         CORRECT_OUTPUT = circ_list.CircList([0, 2, 3, 4, 5, 6])
         self.assertEqual(self.list, CORRECT_OUTPUT)
 
+    def test_slice_removal_head_moved(self):
+        self.list.head += 3
+        del self.list[1:5:2]
+        CORRECT_OUTPUT = circ_list.CircList([0, 1, 2, 3, 5])
+        self.assertEqual(self.list, CORRECT_OUTPUT)
+
+    def test_slice_removal_head_moved_no_start(self):
+        self.list.head += 3
+        del self.list[:5:2]
+        CORRECT_OUTPUT = circ_list.CircList([1, 2, 4, 6])
+        self.assertEqual(self.list, CORRECT_OUTPUT)
+
+    def test_slice_removal_head_moved_no_stop(self):
+        self.list.head += 3
+        del self.list[1::2]
+        CORRECT_OUTPUT = circ_list.CircList([0, 2, 3, 5])
+        self.assertEqual(self.list, CORRECT_OUTPUT)
+
     def test_slice_removal_head_moved_no_step(self):
         self.list.head += 3
         del self.list[1:5]
         CORRECT_OUTPUT = circ_list.CircList([1, 2, 3])
         self.assertEqual(self.list, CORRECT_OUTPUT)
 
-    def test_slice_removal_head_moved_with_step(self):
+    def test_slice_removal_head_moved_no_end_no_step(self):
         self.list.head += 3
-        del self.list[1:5:2]
-        CORRECT_OUTPUT = circ_list.CircList([0, 1, 2, 3, 5])
+        del self.list[1:]
+        CORRECT_OUTPUT = circ_list.CircList([3])
         self.assertEqual(self.list, CORRECT_OUTPUT)
+
+    def test_slice_removal_head_moved_no_start_no_step(self):
+        self.list.head += 3
+        del self.list[:5]
+        CORRECT_OUTPUT = circ_list.CircList([1, 2])
+        self.assertEqual(self.list, CORRECT_OUTPUT)
+
+    def test_slice_removal_head_moved_no_start_no_stop(self):
+        self.list.head += 3
+        del self.list[::2]
+        CORRECT_OUTPUT = circ_list.CircList([1, 4, 6])
+        self.assertEqual(self.list, CORRECT_OUTPUT)
+
+    def test_slice_removal_head_moved_no_start_no_end_no_step(self):
+        self.list.head += 3
+        del self.list[:]
+        CORRECT_OUTPUT = circ_list.CircList()
+        self.assertEqual(self.list, CORRECT_OUTPUT)
+
 
 def suite():
     loader = unittest.TestLoader()
