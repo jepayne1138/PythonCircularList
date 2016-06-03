@@ -64,6 +64,11 @@ class CircListManipulationTests(unittest.TestCase):
     def test_iter_initialized(self):
         self.assertTrue(iter_equal(iter(self.list), xrange(5)))
 
+    def test_iter_head_moved(self):
+        self.list.head += 2
+        CORRECT_OUTPUT = [2, 3, 4, 0, 1]
+        self.assertTrue(iter_equal(iter(self.list), CORRECT_OUTPUT))
+
     def test_initialized_repr(self):
         self.assertEqual(
             repr(self.list),
@@ -76,6 +81,16 @@ class CircListManipulationTests(unittest.TestCase):
             repr(self.list),
             'CircList<virtual=[2, 3, 4, 0, 1], raw=[0, 1, 2, 3, 4], head=2>'
         )
+
+    def test_append_initialized(self):
+        self.list.append(5)
+        self.assertEqual(self.list, range(6))
+
+    def test_append_head_moved(self):
+        self.list.head += 2
+        CORRECT_OUTPUT = [2, 3, 4, 0, 1, 5]
+        self.assertTrue(self.list, CORRECT_OUTPUT)
+
 
 def suite():
     loader = unittest.TestLoader()
