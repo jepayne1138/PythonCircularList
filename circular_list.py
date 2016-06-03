@@ -60,16 +60,20 @@ class CircList(list):
         Returns:
             List[slice]: list of mapped slices
         """
-        mapped_start = (_slice.start + self.head) % len(self)
-        if _slice.stop > len(self):
+        # Define any None values for the slice as integers
+        start_int = 0 if _slice.start is None else _slice.start
+        stop_int = len(self) if _slice.stop is None else _slice.stop
+        step_int = 1 if _slice.step is None else _slice.step
+
+        mapped_start = (start_int + self.head) % len(self)
+        if stop_int > len(self):
             # We add 1 to the mod operator as we want to exceed the list end
             # upon rollover as the endpoint is not inclusive
             mapped_stop = (mapped_start - 1) % (len(self) + 1)
         else:
-            mapped_stop = (_slice.stop + self.head) % len(self)
+            mapped_stop = (stop_int + self.head) % len(self)
 
         # Map into two separate slices if stop rolls over to before start
-        step_int = 1 if _slice.step is None else _slice.step
         if mapped_stop < mapped_start:
             back_slice = slice(mapped_start, len(self), step_int)
             len_back_slice = len(self) - mapped_start
