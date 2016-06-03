@@ -108,12 +108,28 @@ class CircListManipulationTests(unittest.TestCase):
         self.assertTrue(self.list, CORRECT_OUTPUT)
 
 
+class CircListDeleteTests(unittest.TestCase):
+
+    def setUp(self):
+        self.list = circ_list.CircList(range(7))
+
+    def test_item_removal_initial_head(self):
+        CORRECT_OUTPUT = circ_list.CircList([0, 1, 3, 4, 5, 6])
+        del self.list[2]
+        self.assertEqual(self.list, CORRECT_OUTPUT)
+
+    def test_slice_removal_initial_head(self):
+        CORRECT_OUTPUT = circ_list.CircList([0, 2, 4, 5, 6])
+        del self.list[1:5:2]
+        self.assertEqual(self.list, CORRECT_OUTPUT)
+
 def suite():
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
+    suite.addTests(loader.loadTestsFromTestCase(IterEqualTests))
     suite.addTests(loader.loadTestsFromTestCase(CircListInitializationTests))
     suite.addTests(loader.loadTestsFromTestCase(CircListManipulationTests))
-    suite.addTests(loader.loadTestsFromTestCase(IterEqualTests))
+    suite.addTests(loader.loadTestsFromTestCase(CircListDeleteTests))
     return suite
 
 if __name__ == '__main__':

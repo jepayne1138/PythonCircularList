@@ -94,13 +94,14 @@ class CircList(list):
     def __delitem__(self, index):
         if isinstance(index, slice):
             mapped = self._map_slice(index)
+            for mapped_slice in self._map_slice(index):
+                super(CircList, self).__delitem__(mapped_slice)
         elif isinstance(index, int):
-            mapped = self._map_index(index)
+            super(CircList, self).__delitem__(self._map_index(index))
         else:
             raise ValueError(
                 '__delitem__ only accepts an int or slice object argument (not "{})'.format(type(index))
             )
-        super(CircList, self).__delitem__(mapped)
         self.head = self.head  # Resets the head mod length of list
 
     def __delslice__(self, start, end):
